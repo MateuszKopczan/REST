@@ -1,22 +1,22 @@
-package com.example.rest.domain.dto;
+package com.example.rest.domain.movie.dto;
 
-import com.example.rest.domain.models.Actor;
+import com.example.rest.domain.movie.models.Rating;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ManyToMany;
-import java.util.List;
+import java.util.Collection;
 
-@Data @Builder
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FullMovieDetails {
 
-    private String IMDbId;
+    private String id;
     private String title;
     private String originalTitle;
     private String fullTitle;
@@ -26,11 +26,10 @@ public class FullMovieDetails {
     private String releaseDate;
     private String plot;
     private String awards;
-
-    @ManyToMany
-    private List<Actor> actorList;
-    private String genres;
-
-
     private String errorMessage;
+
+    private Rating rating;
+    private Collection<ActorRoleDto> actorList;
+    private Collection<MovieGenre> genreList;
+    private Collection<SimilarMovieDto> similars;
 }

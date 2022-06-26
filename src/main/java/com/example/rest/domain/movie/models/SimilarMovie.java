@@ -1,4 +1,4 @@
-package com.example.rest.domain.models;
+package com.example.rest.domain.movie.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,15 +11,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-@Data @Builder
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rating {
+public class SimilarMovie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String IMDbId;
+    private String title;
+    private String image;
     private float imDbRating;
-    private long imDbRatingCount;
 }

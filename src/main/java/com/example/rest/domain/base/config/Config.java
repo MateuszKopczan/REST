@@ -1,4 +1,4 @@
-package com.example.rest.domain.config;
+package com.example.rest.domain.base.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

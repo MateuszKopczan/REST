@@ -1,6 +1,7 @@
 package com.example.rest.domain.ranking.controller;
 
-import com.example.rest.domain.models.Movie;
+import com.example.rest.domain.movie.models.Movie;
+import com.example.rest.domain.imdb.properties.IMDbProperties;
 import com.example.rest.domain.ranking.models.Ranking;
 
 import com.example.rest.domain.ranking.service.RankingService;
@@ -17,10 +18,12 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class RankingController {
 
+    private final IMDbProperties properties;
     private final RankingService rankingService;
 
     @GetMapping ("/movies")
     public ResponseEntity<Collection<Movie>> getTop250Movies(){
+        System.out.println(properties.getUrls().get("top250movies"));
         Ranking ranking = rankingService.getRanking("top250movies");
         return ResponseEntity.ok(ranking.getMovies());
     }

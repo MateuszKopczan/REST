@@ -1,6 +1,6 @@
 package com.example.rest.domain.ranking.models;
 
-import com.example.rest.domain.models.Movie;
+import com.example.rest.domain.movie.models.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

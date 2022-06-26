@@ -1,4 +1,4 @@
-package com.example.rest.domain.dto;
+package com.example.rest.domain.movie.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class MovieDetailsList {
 
-    private List<MovieDetails> items;
+    private List<ShortMovieDetails> items;
     private String errorMessage;
 }
