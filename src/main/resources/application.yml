@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-circular-references: true
   datasource:
     url:
     username:
@@ -14,5 +16,11 @@ spring:
 imdb:
   api:
     key:
+    urls:
+      rankings:
+        top250movies: https://imdb-api.com/en/API/Top250Movies/
+        top250tvs: https://imdb-api.com/en/API/Top250TVs/
+      movies:
+
 jwt:
   secret:
