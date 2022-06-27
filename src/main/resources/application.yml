@@ -8,7 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -18,9 +18,12 @@ imdb:
     key:
     urls:
       rankings:
-        top250movies: https://imdb-api.com/en/API/Top250Movies/
-        top250tvs: https://imdb-api.com/en/API/Top250TVs/
+        top250movies: https://imdb-api.com/en/API/Top250Movies/${imdb.api.key}
+        top250tvs: https://imdb-api.com/en/API/Top250TVs/${imdb.api.key}
+        mostPopularMovies: https://imdb-api.com/en/API/MostPopularMovies/${imdb.api.key}
+        mostPopularTVs: https://imdb-api.com/en/API/MostPopularTVs/${imdb.api.key}
       movies:
+        fullDetails: https://imdb-api.com/pl/API/Title/${imdb.api.key}/
 
 jwt:
   secret:
