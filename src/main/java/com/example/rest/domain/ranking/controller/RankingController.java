@@ -23,7 +23,6 @@ public class RankingController {
 
     @GetMapping ("/movies")
     public ResponseEntity<Collection<Movie>> getTop250Movies(){
-        System.out.println(properties.getUrls().get("top250movies"));
         Ranking ranking = rankingService.getRanking("top250movies");
         return ResponseEntity.ok(ranking.getMovies());
     }
