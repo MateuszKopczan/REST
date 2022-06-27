@@ -1,4 +1,4 @@
-package com.example.rest.domain.imdb.service.scheduler;
+package com.example.rest.domain.imdb.scheduler;
 
 import com.example.rest.domain.imdb.service.impl.IMDbAsyncServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class RankingScheduler {
     private final IMDbAsyncServiceImpl imDbAsyncService;
 
     @Async
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 34 10 * * ?")
     public void getTop250Movies() throws IOException {
         imDbAsyncService.getTop250Movies();
         log.info("Scheduled top 250 movies update");

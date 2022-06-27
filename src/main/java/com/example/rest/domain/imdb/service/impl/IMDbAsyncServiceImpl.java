@@ -1,7 +1,9 @@
 package com.example.rest.domain.imdb.service.impl;
 
 import com.example.rest.domain.imdb.properties.IMDbProperties;
+import com.example.rest.domain.movie.dto.FullMovieDetails;
 import com.example.rest.domain.movie.dto.MovieDetailsList;
+import com.example.rest.domain.movie.models.Movie;
 import com.example.rest.domain.movie.service.MovieService;
 import com.example.rest.domain.ranking.models.Ranking;
 import com.example.rest.domain.ranking.service.RankingService;
@@ -47,6 +49,23 @@ public class IMDbAsyncServiceImpl {
         // TODO if != 200
         MovieDetailsList top250Tvs = mapper.readValue(response.body().string(), MovieDetailsList.class);
         movieService.saveUniqueMoviesFromCollection(top250Tvs.getItems(), "tvs");
+    }
+
+    @Async
+    public void saveMovieWithAllDetails(String IMDbId) throws IOException {
+        Request request = getRequest("https://imdb-api.com/pl/API/Title/k_xrvzjngm/tt10919420");
+        //Request request = getRequest("https://imdb-api.com/pl/API/Title/" + imDbProperties.getKey() + "/" + IMDbId);
+        Response response = client.newCall(request).execute();
+        System.out.println(response.code());
+        FullMovieDetails fullMovieDetails = mapper.readValue(response.body().string(), FullMovieDetails.class);
+        System.out.println(fullMovieDetails.getErrorMessage());
+//        if(fullMovieDetails.getErrorMessage() != null) {
+//            System.out.println("EXCEPTION");
+//            throw new IOException("APIERROR");
+//        }
+        System.out.println(fullMovieDetails);
+        Movie movie = movieService.createMovieWithFullDetails(fullMovieDetails);
+        movieService.save(movie);
     }
 
     @Async

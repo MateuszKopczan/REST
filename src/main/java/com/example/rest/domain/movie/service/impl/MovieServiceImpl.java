@@ -24,39 +24,19 @@ import java.util.LinkedList;
 
 @Service
 @Transactional
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
 
-    private MovieRepository movieRepository;
-    private RatingRepository ratingRepository;
     private IMDbService imDbService;
-    private ActorService actorService;
-    private GenreService genreService;
-    private SimilarMovieService similarMovieService;
+    private final MovieRepository movieRepository;
+    private final RatingRepository ratingRepository;
+    private final ActorService actorService;
+    private final GenreService genreService;
+    private final SimilarMovieService similarMovieService;
 
-    @Autowired
-    public void setMovieRepository(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
-    @Autowired
-    public void setRatingRepository(RatingRepository ratingRepository) {
-        this.ratingRepository = ratingRepository;
-    }
     @Autowired
     public void setImDbService(IMDbService imDbService) {
         this.imDbService = imDbService;
-    }
-    @Autowired
-    public void setActorService(ActorService actorService) {
-        this.actorService = actorService;
-    }
-    @Autowired
-    public void setGenreService(GenreService genreService) {
-        this.genreService = genreService;
-    }
-    @Autowired
-    public void setSimilarMovieService(SimilarMovieService similarMovieService) {
-        this.similarMovieService = similarMovieService;
     }
 
     @Override
@@ -73,13 +53,11 @@ public class MovieServiceImpl implements MovieService {
     public Movie getByIMDbId(String imDbId) throws IOException {
         if (movieRepository.existsByIMDbId(imDbId)) {
             Movie movie = movieRepository.findByIMDbId(imDbId);
-//            return movie;
             if (movie.isFullDetails())
                 return movie;
             else
                 imDbService.addAllDetailsToMovie(movie);
         } else
-            //           return null;
             imDbService.saveMovieWithAllDetails(imDbId);
 
         return movieRepository.findByIMDbId(imDbId);
@@ -92,8 +70,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie addDetailsToMovie(FullMovieDetails fullMovieDetails, Movie movie) {
-        System.out.println("addDetailsToMovie");
-        System.out.println(fullMovieDetails);
         movie.setPlot(fullMovieDetails.getPlot());
         movie.setAwards(fullMovieDetails.getAwards());
         movie.setActors(actorService.mapActorRoleDtoCollectionToActorRoleCollection(fullMovieDetails.getActorList()));
@@ -105,8 +81,6 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie createMovieWithFullDetails(FullMovieDetails fullMovieDetails) {
-        System.out.println("createMovieWithFullDetails");
-        System.out.println(fullMovieDetails);
         return Movie.builder()
                 .IMDbId(fullMovieDetails.getId())
                 .title(fullMovieDetails.getTitle())
