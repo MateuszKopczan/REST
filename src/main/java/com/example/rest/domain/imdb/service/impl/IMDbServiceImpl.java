@@ -1,13 +1,12 @@
 package com.example.rest.domain.imdb.service.impl;
 
-import com.example.rest.domain.imdb.properties.IMDbProperties;
+import com.example.rest.domain.exception.APIException;
+import com.example.rest.domain.imdb.properties.IMDbEndpoints;
 import com.example.rest.domain.imdb.service.IMDbService;
 import com.example.rest.domain.movie.dto.FullMovieDetails;
-import com.example.rest.domain.movie.dto.MovieDetailsList;
 import com.example.rest.domain.movie.models.Movie;
 import com.example.rest.domain.movie.service.MovieService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,11 +18,10 @@ import java.io.IOException;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class IMDbServiceImpl implements IMDbService {
 
     private MovieService movieService;
-    private final IMDbProperties imDbProperties;
+    private IMDbEndpoints imDbEndpoints;
     private final OkHttpClient client = new OkHttpClient().newBuilder().build();
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -32,59 +30,52 @@ public class IMDbServiceImpl implements IMDbService {
         this.movieService = movieService;
     }
 
-    @Override
-    public MovieDetailsList getTop250Movies() throws IOException {
-        Request request = getRequest("https://imdb-api.com/en/API/Top250Movies/");
-        Response response = client.newCall(request).execute();
-
-        // TODO if != 200
-        MovieDetailsList top250Movies = mapper.readValue(response.body().string(), MovieDetailsList.class);
-
-        return top250Movies;
+    @Autowired
+    public void setImDbEndpoints(IMDbEndpoints imDbEndpoints) {
+        this.imDbEndpoints = imDbEndpoints;
     }
 
     @Override
-    public MovieDetailsList getTop250Tvs() throws IOException {
-        Request request = getRequest("https://imdb-api.com/en/API/Top250TVs/");
-        Response response = client.newCall(request).execute();
-        MovieDetailsList top250Tvs = mapper.readValue(response.body().string(), MovieDetailsList.class);
-        return top250Tvs;
-    }
-
-    @Override
-    public MovieDetailsList getMostPopularMovies() {
-        return null;
-    }
-
-    @Override
-    public MovieDetailsList getMostPopularTVs() {
-        return null;
-    }
-
-    @Override
-    public void saveMovieWithAllDetails(String IMDbId) throws IOException {
-        Request request = getRequest("https://imdb-api.com/pl/API/Title/" + imDbProperties.getKey() + "/" + IMDbId);
-        Response response = client.newCall(request).execute();
+    public void saveMovieWithAllDetails(String IMDbId) throws IOException, APIException {
+        Request request = getRequest(imDbEndpoints.getMovies().get("fullDetails") + IMDbId);
+        Response response = getResponse(request);
 
         FullMovieDetails fullMovieDetails = mapper.readValue(response.body().string(), FullMovieDetails.class);
+        if (fullMovieDetails.getErrorMessage() != null)
+            throw new APIException(fullMovieDetails.getErrorMessage());
+
         Movie movie = movieService.createMovieWithFullDetails(fullMovieDetails);
         movieService.save(movie);
     }
 
     @Override
-    public void addAllDetailsToMovie(Movie movie) throws IOException {
-        Request request = getRequest("https://imdb-api.com/pl/API/Title/" + imDbProperties.getKey() + "/" + movie.getIMDbId());
-        Response response = client.newCall(request).execute();
+    public void addAllDetailsToMovie(Movie movie) throws IOException, APIException {
+        Request request = getRequest(imDbEndpoints.getMovies().get("fullDetails") + movie.getIMDbId());
+        Response response = getResponse(request);
 
         FullMovieDetails fullMovieDetails = mapper.readValue(response.body().string(), FullMovieDetails.class);
+        if (fullMovieDetails.getErrorMessage() != null)
+            throw new APIException(fullMovieDetails.getErrorMessage());
+
         movie = movieService.addDetailsToMovie(fullMovieDetails, movie);
         movieService.save(movie);
     }
 
-    private Request getRequest(String url) {
+    protected Request getRequest(String url) {
         return new Request.Builder()
                 .url(url)
                 .method("GET", null)
                 .build();
+    }
+
+    protected Response getResponse(Request request) throws IOException, APIException {
+        Response response = client.newCall(request).execute();
+        validateResponse(response);
+        return response;
+    }
+
+    private void validateResponse(Response response) throws APIException {
+        if (response.code() != 200 || response.body() == null)
+            throw new APIException("External API error");
     }
 }

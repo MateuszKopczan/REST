@@ -1,5 +1,6 @@
 package com.example.rest.domain.movie.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class Movie {
     private String type;
     private String awards;
     private String plot;
+    @JsonIgnore
     private boolean fullDetails = false;
 
     @OneToOne

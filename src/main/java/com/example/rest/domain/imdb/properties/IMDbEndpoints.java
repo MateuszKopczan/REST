@@ -19,5 +19,5 @@ import java.util.Map;
 public class IMDbEndpoints {
 
     private Map<String, String> rankings;
-//    private Map<String, String> movies;
+    private Map<String, String> movies;
 }

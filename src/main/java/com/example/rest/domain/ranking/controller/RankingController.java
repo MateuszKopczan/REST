@@ -1,9 +1,7 @@
 package com.example.rest.domain.ranking.controller;
 
 import com.example.rest.domain.movie.models.Movie;
-import com.example.rest.domain.imdb.properties.IMDbProperties;
 import com.example.rest.domain.ranking.models.Ranking;
-
 import com.example.rest.domain.ranking.service.RankingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +16,29 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class RankingController {
 
-    private final IMDbProperties properties;
     private final RankingService rankingService;
 
-    @GetMapping ("/movies")
-    public ResponseEntity<Collection<Movie>> getTop250Movies(){
+    @GetMapping("/movies/top250")
+    public ResponseEntity<Collection<Movie>> getTop250Movies() {
         Ranking ranking = rankingService.getRanking("top250movies");
         return ResponseEntity.ok(ranking.getMovies());
     }
 
-    @GetMapping("/tvs")
-    public ResponseEntity<Collection<Movie>> getTop250Tvs(){
+    @GetMapping("/tvs/top250")
+    public ResponseEntity<Collection<Movie>> getTop250Tvs() {
         Ranking ranking = rankingService.getRanking("top250tvs");
+        return ResponseEntity.ok(ranking.getMovies());
+    }
+
+    @GetMapping("movies/popular")
+    public ResponseEntity<Collection<Movie>> getMostPopularMoviesRanking() {
+        Ranking ranking = rankingService.getRanking("mostPopularMovies");
+        return ResponseEntity.ok(ranking.getMovies());
+    }
+
+    @GetMapping("tvs/popular")
+    public ResponseEntity<Collection<Movie>> getMostPopularTvsRanking() {
+        Ranking ranking = rankingService.getRanking("mostPopularTVs");
         return ResponseEntity.ok(ranking.getMovies());
     }
 }
