@@ -1,5 +1,6 @@
 package com.example.rest.domain.movie.service.impl;
 
+import com.example.rest.domain.exception.APIException;
 import com.example.rest.domain.imdb.service.IMDbService;
 import com.example.rest.domain.movie.dto.FullMovieDetails;
 import com.example.rest.domain.movie.dto.ShortMovieDetails;
@@ -14,7 +15,7 @@ import com.example.rest.domain.movie.service.SimilarMovieService;
 import com.example.rest.util.NumberParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,7 +36,7 @@ public class MovieServiceImpl implements MovieService {
     private final SimilarMovieService similarMovieService;
 
     @Autowired
-    public void setImDbService(IMDbService imDbService) {
+    public void setImDbService(@Qualifier("IMDbServiceImpl") IMDbService imDbService) {
         this.imDbService = imDbService;
     }
 
@@ -50,7 +51,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie getByIMDbId(String imDbId) throws IOException {
+    public Movie getByIMDbId(String imDbId) throws IOException, APIException {
         if (movieRepository.existsByIMDbId(imDbId)) {
             Movie movie = movieRepository.findByIMDbId(imDbId);
             if (movie.isFullDetails())

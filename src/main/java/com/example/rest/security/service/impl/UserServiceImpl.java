@@ -1,5 +1,6 @@
 package com.example.rest.security.service.impl;
 
+import com.example.rest.domain.movie.models.Movie;
 import com.example.rest.security.models.Role;
 import com.example.rest.security.models.User;
 import com.example.rest.security.repository.RoleRepository;
@@ -60,6 +61,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> getUsers() {
         log.info("Fetching all users");
         return userRepository.findAll();
+    }
+
+    @Override
+    public void addMovieToWatchList(User user, Movie movie) {
+        user.getWatchList().add(movie);
+        saveUser(user);
+    }
+
+    @Override
+    public void removeMovieFromWatchList(User user, Movie movie) {
+        user.getWatchList().remove(movie);
+        saveUser(user);
+    }
+
+    @Override
+    public void clearWatchList(User user) {
+        user.getWatchList().clear();
+        saveUser(user);
     }
 
     @Override

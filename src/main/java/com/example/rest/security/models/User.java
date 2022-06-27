@@ -1,5 +1,6 @@
 package com.example.rest.security.models;
 
+import com.example.rest.domain.movie.models.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,10 @@ public class User {
     private String name;
     private String username;
     private String password;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
+
+    @ManyToMany
+    private Collection<Movie> watchList = new ArrayList<>();
 }

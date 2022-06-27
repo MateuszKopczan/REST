@@ -1,5 +1,6 @@
 package com.example.rest.domain.movie.service;
 
+import com.example.rest.domain.exception.APIException;
 import com.example.rest.domain.movie.dto.FullMovieDetails;
 import com.example.rest.domain.movie.dto.ShortMovieDetails;
 import com.example.rest.domain.movie.models.Movie;
@@ -14,7 +15,7 @@ public interface MovieService {
 
     Movie getByTitle(String title);
 
-    Movie getByIMDbId(String imDbId) throws IOException;
+    Movie getByIMDbId(String imDbId) throws IOException, APIException;
 
     boolean isFullDetails(Movie movie);
 
